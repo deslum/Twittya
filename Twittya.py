@@ -36,7 +36,7 @@ class Tweetya(object):
 
 	def setlink(self,link):
 		handle = open(FILENAME,'a')
-		handle.write(link);
+		handle.write(link+'\n');
 		handle.close
 
 	def short(self,url):
@@ -57,6 +57,8 @@ class Tweetya(object):
 			 		title = title[:118-len(title)]
 			if link!=None:
 				link = link.find(name = 'a').get('href')
+				link = link[70:-21]
+				self.setlink(link)
 				link = self.short(link[70:-21])
 				tweet = str(title)+' '+str(link)
 				print tweet
