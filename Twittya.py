@@ -53,10 +53,13 @@ class Tweetya(object):
 			link = anchor.find(attrs={'class': 'buttonheading'})
 			if title!=None:
 			 	title = title.text.encode('utf-8')
+			 	if len(title)>118:
+			 		title = title[:118-len(title)]
 			if link!=None:
 				link = link.find(name = 'a').get('href')
 				link = self.short(link[70:-21])
-				print str(title)+' '+str(link)
+				tweet = str(title)+' '+str(link)
+				print tweet
 
 
 
