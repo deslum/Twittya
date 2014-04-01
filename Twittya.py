@@ -4,23 +4,28 @@ import codecs
 import os
 import urllib2
 import time
+import webbrowser
 from BeautifulSoup import BeautifulSoup
 
 URL = "http://www.kolomna-kgpi.ru/index.php?option=com_content&task=blogcategory&id=1&Itemid=79"
+FILENAME = "tweets.txt"
 
+CONSUMER_KEY = ''
+CONSUMER_SECRET = ''
+ACCESS_KEY = ''
+ACCESS_SECRET = ''
 
 class Tweetya(object):
 
 	def __init__(self):
-		return
-		
+		return		
 
 	def auth(self):
 		auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 		api = tweepy.API(auth)
-		api.update_status('Hello from tweepy!')
-		return api
+		api.update_status('Проба пера')
+
 	
 	def getlinks(self):
 		links=[]
@@ -36,7 +41,7 @@ class Tweetya(object):
 	def setlink(self,link):
 		try:
 			handle = open(FILENAME,'a')
-			handle.write(link+'\n');
+			handle.write(link);
 			handle.close
 		except:
 			print "Error read file"
@@ -59,36 +64,28 @@ class Tweetya(object):
 
 
 	def parse(self):
-		text = []
 		data = []
 		page = urllib2.urlopen(URL).read()
 		soup = BeautifulSoup(page)
 		soup.prettify()
 		for anchor in soup.findAll(attrs={'class': 'contentpaneopen'}): 
-			title = anchor.find(attrs={'class': 'contentheading'})
 			link = anchor.find(attrs={'class': 'buttonheading'})
-			if title!=None:
-			 	title = title.text.encode('utf-8')
-			 	if len(title)>118:
-			 		title = title[:118-len(title)]
-			 	text.append(title)
 			if link!=None:
 				link = link.find(name = 'a').get('href')
 				link = link[70:-21]
-				data.append(link)
-		return text,data
+				data.append(link+'\n')
+		return data
 
 
 
 if __name__ == '__main__':
-	reload(sys)
-	sys.setdefaultencoding('utf8')
 	t = Tweetya()
-	text,link = t.parse()
+	link = t.parse()
 	urls = t.getlinks()
 	for i in link:
-		if not (i in urls):
+		if  not (i in urls):
 			t.setlink(i)
 			short = t.short(i)
 			title = t.gettitle(short)
-			print title+' '+short  
+			print title+' '+short
+	t.auth() 
