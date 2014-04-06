@@ -10,6 +10,10 @@ from BeautifulSoup import BeautifulSoup
 URL 		= "http://.../index.php?option=com_content&task=blogcategory&"
 FILENAME 	= "tweets.txt"
 PAGES 		= ['id=1&Itemid=79','id=24&Itemid=78','id=22&Itemid=82']#'id=26Itemid=83']
+SHORTURL	= "http://clck.ru/--?url="
+
+#	ONE MORE SHORT LINKS
+#	https://rlu.ru/
 
 CONSUMER_KEY 	= ''
 CONSUMER_SECRET = ''
@@ -67,7 +71,7 @@ class Tweetya(object):
 			print "Error read file"
 
 	def short(self,url):
-		s = 'http://clck.ru/--?url=http%3A%2F%2F...%2Findex2.php%3Foption%3Dcom_content%26task%3Dview%26id%3D'
+		s = SHORTURL+'http%3A%2F%2F...%2Findex2.php%3Foption%3Dcom_content%26task%3Dview%26id%3D'
 		fet = urllib2.urlopen(s+'%s' %url).read()
 		return fet
 
