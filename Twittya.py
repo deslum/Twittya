@@ -79,12 +79,14 @@ class Tweetya(object):
 		page = urllib2.urlopen(site).read()
 		soup = BeautifulSoup(page)
 		soup.prettify()
-		title = soup.find(attrs={'class': 'contentheading'})
-		if title!=None:
-			title = title.text.encode('utf-8')
-			if len(title)>118:
-			 	title = title[:118-len(title)]
-		return title
+		text = soup.find(attrs={'class': 'contentheading'})
+		if text!=None:
+			#title = title.text.encode('utf-8')
+			#text = unicode(title, 'utf-8')
+			l = len(text)
+			if l>118:
+			 	text = text[:118-l]
+		return text.text.encode('utf-8')
 
 
 	def parse(self,site):
