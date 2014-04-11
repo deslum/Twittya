@@ -5,20 +5,18 @@ import os
 import urllib2
 import time
 import threading
+from threading import BoundedSemaphore
 from BeautifulSoup import BeautifulSoup
 
-URL 		= "http://.../index.php?option=com_content&task=blogcategory&"
+URL 		= "http://www.kolomna-kgpi.ru/index.php?option=com_content&task=blogcategory&"
 FILENAME 	= "tweets.txt"
-PAGES 		= ['id=1&Itemid=79','id=24&Itemid=78','id=22&Itemid=82']#'id=26Itemid=83']
-SHORTURL	= "http://clck.ru/--?url="
+PAGES 		= ['id=1&Itemid=79','id=24&Itemid=78','id=22&Itemid=82']#,'id=26Itemid=83']
+MAXCONN		= 1
 
-#	ONE MORE SHORT LINKS
-#	https://rlu.ru/
-
-CONSUMER_KEY 	= ''
-CONSUMER_SECRET = ''
-ACCESS_KEY 	= ''
-ACCESS_SECRET	= ''
+CONSUMER_KEY 		= ''
+CONSUMER_SECRET 	= ''
+ACCESS_KEY 		= ''
+ACCESS_SECRET		= ''
 
 
 class MyThread(threading.Thread):
@@ -26,17 +24,20 @@ class MyThread(threading.Thread):
  	def __init__(self,site):
  		self.site = site
 		threading.Thread.__init__(self)
+		self.semaphore = BoundedSemaphore(value=MAXCONN)
+		self.t = Tweetya()
 
 	def run(self):
-		t = Tweetya()
-		link = t.parse(self.site)
-		urls = t.getlinks()
+		link = self.t.parse(self.site)
+		self.semaphore.acquire() 
+		urls = self.t.getlinks()
 		for i in link:
 			if  not (i in urls):
-				t.setlink(i)
-				short = t.short(i)
-				title = t.gettitle(short)
+				self.t.setlink(i)
+				short = self.t.short(i)
+				title = self.t.gettitle(short)
 				print str(title)+' '+str(short)
+		self.semaphore.release()
 
 
 class Tweetya(object):
@@ -71,7 +72,7 @@ class Tweetya(object):
 			print "Error read file"
 
 	def short(self,url):
-		s = SHORTURL+'http%3A%2F%2F...%2Findex2.php%3Foption%3Dcom_content%26task%3Dview%26id%3D'
+		s = 'http://clck.ru/--?url=http%3A%2F%2Fwww.kolomna-kgpi.ru%2Findex2.php%3Foption%3Dcom_content%26task%3Dview%26id%3D'
 		fet = urllib2.urlopen(s+'%s' %url).read()
 		return fet
 
@@ -80,14 +81,13 @@ class Tweetya(object):
 		soup = BeautifulSoup(page)
 		soup.prettify()
 		text = soup.find(attrs={'class': 'contentheading'})
+		l = 0
 		if text!=None:
-			#title = title.text.encode('utf-8')
-			#text = unicode(title, 'utf-8')
 			l = len(text)
-			if l>118:
-			 	text = text[:118-l]
-		return text.text.encode('utf-8')
-
+		if l>118:
+			text = text[:118-l]
+		text = text.text.encode('utf-8')
+		return text
 
 	def parse(self,site):
 		data = []
