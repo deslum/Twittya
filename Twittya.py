@@ -10,7 +10,7 @@ from BeautifulSoup import BeautifulSoup
 
 URL 		= "http://www.kolomna-kgpi.ru/index.php?option=com_content&task=blogcategory&"
 FILENAME 	= "tweets.txt"
-PAGES 		= ['id=1&Itemid=79','id=24&Itemid=78','id=22&Itemid=82']#,'id=26Itemid=83']
+PAGES 		= ['id=1&Itemid=79','id=24&Itemid=78','id=22&Itemid=82','id=26&Itemid=83']
 MAXCONN		= 1
 
 CONSUMER_KEY 		= ''
