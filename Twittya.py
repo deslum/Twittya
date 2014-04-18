@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 import tweepy
 import codecs
-import os
 import urllib2
-import time
 import threading
 from threading import BoundedSemaphore
 from BeautifulSoup import BeautifulSoup
@@ -13,10 +11,10 @@ FILENAME 	= "tweets.txt"
 PAGES 		= ['id=1&Itemid=79','id=24&Itemid=78','id=22&Itemid=82','id=26&Itemid=83']
 MAXCONN		= 1
 
-CONSUMER_KEY 		= ''
-CONSUMER_SECRET 	= ''
-ACCESS_KEY 		= ''
-ACCESS_SECRET		= ''
+CONSUMER_KEY 	= ''
+CONSUMER_SECRET = ''
+ACCESS_KEY 	= ''
+ACCESS_SECRET	= ''
 
 
 class MyThread(threading.Thread):
@@ -41,9 +39,6 @@ class MyThread(threading.Thread):
 
 
 class Tweetya(object):
-
-	def __init__(self):
-		return		
 
 	def auth(self):
 		auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
