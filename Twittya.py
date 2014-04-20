@@ -77,8 +77,7 @@ class Tweetya(object):
 		soup.prettify()
 		text = soup.find(attrs={'class': 'contentheading'})
 		l = 0
-		if text!=None:
-			l = len(text)
+		l = len(text)
 		if l>118:
 			text = text[:118-l]
 		text = text.text.encode('utf-8')
