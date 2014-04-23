@@ -3,11 +3,9 @@ import tweepy
 import codecs
 import urllib2
 import threading
-import MySQLdb
-import string
+import pymysql
 from threading import BoundedSemaphore
 from BeautifulSoup import BeautifulSoup
-
 
 URL 		= "http://www.kolomna-kgpi.ru/index.php?option=com_content&task=blogcategory&"
 FILENAME 	= "tweets.txt"
@@ -51,36 +49,26 @@ class Tweetya(object):
 
 	
 	def getlinks(self):
-		db = MySQLdb.connect(host="localhost", user="root", passwd="пароль", db="contacts", charset='utf8')
-		cursor = db.cursor()
-		sql = """SELECT mail, name FROM eadres WHERE mail LIKE '%yandex.ru' LIMIT 10"""
-		cursor.execute(sql)
-		data =  cursor.fetchall()
-		db.close()
-		return data 
-		#links=[]
-		#try:
-		#	handle = open(FILENAME,"r")
-		#	for line in handle.readlines():
-		#		links.append(line)
-		#except:
-		#	print "Error read file"
-		#handle.close
-		#return links
+		d = []
+		conn = pymysql.connect(host='', user='', 
+		passwd="", db='')
+		cur = conn.cursor()
+		cur.execute("SELECT vars FROM urls")
+		data = cur.fetchall()
+		for i in data:
+			d.append(i[0])
+		cur.close()
+		conn.close()
+		return d
 
 	def setlink(self,link):
-		db = MySQLdb.connect(host="localhost", user="root", passwd="пароль", db="contacts", charset='utf8')
-		cursor = db.cursor()
-		sql = """INSERT mail, name FROM eadres WHERE mail LIKE '%yandex.ru' LIMIT 10"""
-		cursor.execute(sql)
-		data =  cursor.fetchall()
-		db.close()
-		#try:
-		#	handle = open(FILENAME,'a')
-		#	handle.write(link);
-		#	handle.close
-		#except:
-		#	print "Error read file"
+		conn = pymysql.connect(host='', user='',
+	 		passwd="", db='')
+		cur = conn.cursor()
+		cur.execute("INSERT INTO urls VALUES (\'"+link+"\')")
+		conn.commit()
+		cur.close()
+		conn.close()
 
 	def short(self,url):
 		s = 'http://clck.ru/--?url=http%3A%2F%2Fwww.kolomna-kgpi.ru%2Findex2.php%3Foption%3Dcom_content%26task%3Dview%26id%3D'
@@ -109,13 +97,17 @@ class Tweetya(object):
 			if link!=None:
 				link = link.find(name = 'a').get('href')
 				link = link[70:-21]
-				data.append(link+'\n')
+				data.append(link)
 		return data
 
 
 
 
 if __name__ == '__main__':
+	#t = Tweetya()
+	#for i in t.getlinks():
+	#	print i
+
 	for num in PAGES:
 		url = URL+num
 		MyThread(url).start()
