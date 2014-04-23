@@ -35,17 +35,17 @@ class MyThread(threading.Thread):
 				self.t.setlink(i)
 				short = self.t.short(i)
 				title = self.t.gettitle(short)
-				print str(title)+' '+str(short)
+				self.t.auth(str(title)+' '+str(short))
 		self.semaphore.release()
 
 
 class Tweetya(object):
 
-	def auth(self):
+	def auth(self,text):
 		auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 		auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 		api = tweepy.API(auth)
-		api.update_status('Проба пера')
+		api.update_status(text)
 
 	
 	def getlinks(self):
@@ -71,8 +71,8 @@ class Tweetya(object):
 		conn.close()
 
 	def short(self,url):
-		s = 'http://clck.ru/--?url=http%3A%2F%2Fwww.kolomna-kgpi.ru%2Findex2.php%3Foption%3Dcom_content%26task%3Dview%26id%3D'
-		fet = urllib2.urlopen(s+'%s' %url).read()
+		s = 'http://www.kolomna-kgpi.ru/index2.php?option=com_content&task=view&id='
+		fet = s+url;
 		return fet
 
 	def gettitle(self,site):
@@ -104,10 +104,6 @@ class Tweetya(object):
 
 
 if __name__ == '__main__':
-	#t = Tweetya()
-	#for i in t.getlinks():
-	#	print i
-
 	for num in PAGES:
 		url = URL+num
 		MyThread(url).start()
