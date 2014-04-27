@@ -1,4 +1,4 @@
 Twittya
 =======
 
-##Twittya - little bot in Site to Twitter.
+Twittya - little bot in Site to Twitter.
